@@ -1,0 +1,183 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>notes for class 💌</title>
+  <style>
+    body {
+      background-color: #fffaf0;
+      font-family: 'Comic Sans MS', cursive, sans-serif;
+      text-align: center;
+      padding: 20px;
+      color: #ff69b4;
+    }
+    h1 {
+      font-size: 40px;
+      color: #ff69b4;
+      margin-bottom: 10px;
+    }
+    h2 {
+      margin-top: 20px;
+    }
+    input, select, button, textarea {
+      padding: 10px;
+      margin: 8px;
+      border-radius: 10px;
+      border: 1px solid #ffb6c1;
+    }
+    button {
+      background-color: #ff69b4;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #ff1493;
+    }
+    .message-card {
+      border-radius: 15px;
+      padding: 15px;
+      margin: 10px;
+      display: inline-block;
+      max-width: 300px;
+      color: #333;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    #navBar button {
+      margin: 5px;
+    }
+    .inbox-message {
+      margin: 10px;
+      padding: 10px;
+      border-radius: 12px;
+      background-color: #ffe4e1;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>💌 notes for school 💌</h1>
+
+  <!-- Navigation -->
+  <div id="navBar" style="display:none;">
+    <button onclick="showPage('mainBoard')">Send Notes</button>
+    <button onclick="showPage('inboxPage')">My Inbox</button>
+    <button onclick="showPage('settingsPage')">Settings</button>
+  </div>
+
+  <!-- Name Setup -->
+  <div id="setup">
+    <h2>Who are you?</h2>
+    <input type="text" id="realName" placeholder="Your Real Name"><br>
+    <input type="text" id="displayName" placeholder="Your Display Name"><br>
+    <button onclick="startSite()">Start!</button>
+  </div>
+
+  <!-- Message Board -->
+  <div id="mainBoard" style="display:none;">
+    <h2>📩 Send a Note</h2>
+    <input type="text" id="toName" placeholder="To (Real Name)"><br>
+    <textarea id="messageText" placeholder="Your message here"></textarea><br>
+    <label>Pick a color:</label>
+    <input type="color" id="msgColor" value="#ffb6c1"><br>
+    <label>Pick an emoji:</label>
+    <select id="emojiPick">
+      <option>🌸</option>
+      <option>✨</option>
+      <option>🎀</option>
+      <option>🍥</option>
+    </select><br>
+    <button onclick="sendMessage()">Send!</button>
+
+    <h2>💌 Messages</h2>
+    <div id="messageBoard"></div>
+  </div>
+
+  <!-- Inbox Page -->
+  <div id="inboxPage" style="display:none;">
+    <h2>📥 Your Inbox</h2>
+    <div id="inboxBoard"></div>
+  </div>
+
+  <!-- Settings Page -->
+  <div id="settingsPage" style="display:none;">
+    <h2>⚙️ Settings</h2>
+    <label>Inbox Font:</label>
+    <select id="fontPick" onchange="updateFont()">
+      <option value="'Comic Sans MS', cursive">Bubble Writing (Default)</option>
+      <option value="'Courier New', monospace">Monospace</option>
+      <option value="Verdana, sans-serif">Plain</option>
+      <option value="'Brush Script MT', cursive">Script</option>
+    </select>
+  </div>
+
+  <script>
+    let realName = '';
+    let displayName = '';
+
+    function startSite() {
+      realName = document.getElementById('realName').value;
+      displayName = document.getElementById('displayName').value;
+      if (realName === '' || displayName === '') {
+        alert('Please fill out both fields!');
+      } else {
+        document.getElementById('setup').style.display = 'none';
+        document.getElementById('navBar').style.display = 'block';
+        document.getElementById('mainBoard').style.display = 'block';
+      }
+    }
+
+    function sendMessage() {
+      let to = document.getElementById('toName').value;
+      let text = document.getElementById('messageText').value;
+      let color = document.getElementById('msgColor').value;
+      let emoji = document.getElementById('emojiPick').value;
+
+      if (to === '' || text === '') {
+        alert('Please fill in both the name and message!');
+        return;
+      }
+
+      let card = document.createElement('div');
+      card.className = 'message-card';
+      card.style.backgroundColor = color;
+      card.innerHTML = `<h3>To: ${to}</h3>
+                        <p>${emoji} ${text}</p>
+                        <p style="font-size:12px;">— ${displayName}</p>`;
+
+      document.getElementById('messageBoard').appendChild(card);
+
+      // If it's to me, add to inbox too
+      if (to.toLowerCase() === realName.toLowerCase()) {
+        let inboxMsg = document.createElement('div');
+        inboxMsg.className = 'inbox-message';
+        inboxMsg.style.fontFamily = document.getElementById('fontPick').value;
+        inboxMsg.innerHTML = `<p>${emoji} ${text}</p>
+                              <p style="font-size:12px;">— ${displayName}</p>`;
+        document.getElementById('inboxBoard').appendChild(inboxMsg);
+      }
+
+      // Clear inputs
+      document.getElementById('toName').value = '';
+      document.getElementById('messageText').value = '';
+    }
+
+    function showPage(pageId) {
+      document.getElementById('mainBoard').style.display = 'none';
+      document.getElementById('inboxPage').style.display = 'none';
+      document.getElementById('settingsPage').style.display = 'none';
+      document.getElementById(pageId).style.display = 'block';
+    }
+
+    function updateFont() {
+      let inboxMessages = document.getElementsByClassName('inbox-message');
+      let selectedFont = document.getElementById('fontPick').value;
+      for (let msg of inboxMessages) {
+        msg.style.fontFamily = selectedFont;
+      }
+    }
+  </script>
+
+</body>
+</html>
